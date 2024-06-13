@@ -1,0 +1,10 @@
+<button (click)="addTimer()">Add</button>
+
+<div *ngFor="let timer of timersArray; let i=index">
+    <div [formGroup]="timer">
+        <input formControlName="duration">
+        <button (click)="startTimer(timer)">Start</button>
+        <button (click)="stopTimer(timer)">Stop</button>
+        <button (click)="removeTimer(timer, i)">Remove</button>
+    </div>
+</div>
