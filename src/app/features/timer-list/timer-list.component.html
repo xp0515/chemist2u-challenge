@@ -1,10 +1,7 @@
-<button (click)="addTimer()">Add</button>
-
-<div *ngFor="let timer of timersArray; let i=index">
-    <div [formGroup]="timer">
-        <input formControlName="duration">
-        <button (click)="startTimer(timer)">Start</button>
-        <button (click)="stopTimer(timer)">Stop</button>
-        <button (click)="removeTimer(timer, i)">Remove</button>
+<div class="container">
+    <app-header (onAddTimer)="addTimer()" (onSortAsc)="sortAsc()" (onSortDesc)="sortDesc()" />
+    <div *ngFor="let timer of timers; let i=index">
+        <app-timer [duration]="getDuration(timer)" [isRunning]="isRunning(timer)" (onStartTimer)="startTimer(timer)"
+            (onStopTimer)="stopTimer(timer)" (onRemoveTimer)="removeTimer(timer, i)" />
     </div>
 </div>

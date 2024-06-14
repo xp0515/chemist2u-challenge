@@ -2,34 +2,42 @@ import { NgFor } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { randomInteger } from "../../shared/helpers/helper";
-import { SocketService } from "../../shared/services/socket.service";
 import { ServerEvent } from "../../shared/models";
+import { SocketService } from "../../shared/services/socket.service";
+import { TimerComponent } from "../timer/timer.component";
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
     standalone: true,
-    imports: [NgFor, ReactiveFormsModule],
+    imports: [NgFor, HeaderComponent, ReactiveFormsModule, TimerComponent],
     selector: `timer-list`,
+    styleUrls: ['./timer-list.component.scss'],
     templateUrl: `./timer-list.component.html`
 })
 
 export class TimerListComponent implements OnInit {
-    private _socketService = inject(SocketService)
-
-    timersArray: FormGroup<{
-        id: FormControl<number | null>;
-        duration: FormControl<number | null>;
+    timers: FormGroup<{
+        id: FormControl<number>;
+        duration: FormControl<number>;
+        isRunning: FormControl<boolean>;
     }>[] = []
 
+    private _socketService = inject(SocketService)
+
     ngOnInit(): void {
-        this._socketService.onEvent(ServerEvent.SERVEREVENT).subscribe(({ id, duration }) => {
-            const timerFormGroup = this.timersArray.find(timerFormGroup => timerFormGroup.controls.id.value === id)
+        this._socketService.onEvent(ServerEvent.SERVEREVENT).subscribe(({ id, duration, isRunning }) => {
+            const timerFormGroup = this.timers.find(timerFormGroup => timerFormGroup.controls.id.value === id)
             if (!!timerFormGroup) {
-                timerFormGroup.patchValue({ duration })
+                timerFormGroup.patchValue({ duration, isRunning })
             } else {
-                this.timersArray.push(new FormGroup({
-                    id: new FormControl(id),
-                    duration: new FormControl(duration),
+                this.timers.push(new FormGroup({
+                    id: new FormControl(id, { nonNullable: true }),
+                    duration: new FormControl(duration, { nonNullable: true }),
+                    isRunning: new FormControl(isRunning ?? false, { nonNullable: true }),
                 }))
+            }
+            if (duration === 0 && isRunning) {
+                this.stopTimer(timerFormGroup as FormGroup);
             }
         });
     }
@@ -37,23 +45,41 @@ export class TimerListComponent implements OnInit {
     addTimer = (): void => {
         const id = new Date().valueOf();
         const duration = randomInteger(600, 1200)
-        this.timersArray.push(new FormGroup({
-            id: new FormControl(id),
-            duration: new FormControl(duration),
+        this.timers.push(new FormGroup({
+            id: new FormControl(id, { nonNullable: true }),
+            duration: new FormControl(duration, { nonNullable: true }),
+            isRunning: new FormControl(false, { nonNullable: true }),
         }));
         this._socketService.onTimerEvent(ServerEvent.ADDTIMER, { id, duration })
     }
 
     removeTimer = (timer: FormGroup, index: number): void => {
-        this.timersArray.splice(index, 1)
+        this.timers.splice(index, 1)
         this._socketService.onTimerEvent(ServerEvent.REMOVETIMER, { duration: timer.value.duration, id: timer.value.id })
     }
 
     startTimer = (timer: FormGroup): void => {
-        this._socketService.onTimerEvent(ServerEvent.STARTTIMER, { duration: timer.value.duration, id: timer.value.id })
+        const duration = timer.value.duration === 0 ? randomInteger(600, 1200) : timer.value.duration
+        this._socketService.onTimerEvent(ServerEvent.STARTTIMER, { duration, id: timer.value.id });
     }
 
-    stopTimer = (timer: FormGroup): void => {
-        this._socketService.onTimerEvent(ServerEvent.STOPTIMER, { duration: timer.value.duration, id: timer.value.id })
+    stopTimer = (timer: FormGroup): void => this._socketService.onTimerEvent(ServerEvent.STOPTIMER, { duration: timer.value.duration, id: timer.value.id });
+
+    getDuration = (timer: FormGroup): number => timer.value.duration;
+
+    isRunning = (timer: FormGroup): boolean => timer.value.isRunning;
+
+    sortAsc = () => {
+        if (!this.timers.length) {
+            return
+        }
+        this.timers.sort((a, b) => (a.value.duration ?? 0) - (b.value.duration ?? 0))
+    }
+
+    sortDesc = () => {
+        if (!this.timers.length) {
+            return
+        }
+        this.timers.sort((a, b) => (b.value.duration ?? 0) - (a.value.duration ?? 0))
     }
 }

@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: auto;
+    margin-bottom: 8px;
+    padding: 8px;
+    height: 42px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    background-color: #FFD0FB;
+    border: none;
+    font-size: x-large;
+
+    &:focus {
+        outline-width: 0;
+    }
+
+}

@@ -15,20 +15,4 @@ export class SocketService {
     onTimerEvent(eventName: ServerEvent, data: TimerPayload): void {
         this.socket.emit(eventName, data);
     }
-
-    // addTimer(eventName: ServerEvent, data: TimerPayload): void {
-    //     this.socket.emit(eventName, data);
-    // }
-
-    // startTimer(eventName: ServerEvent, data: TimerPayload): void {
-    //     this.socket.emit(eventName, data);
-    // }
-
-    // stopTimer(eventName: ServerEvent, data: TimerPayload): void {
-    //     this.socket.emit(eventName, data);
-    // }
-
-    // removeTimer(eventName: ServerEvent, data: TimerPayload): void {
-    //     this.socket.emit(eventName, data);
-    // }
 }

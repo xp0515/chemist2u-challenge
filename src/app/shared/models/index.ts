@@ -1,6 +1,7 @@
 export type TimerPayload = {
     id: number;
     duration: number;
+    isRunning?: boolean;
 }
 
 export enum ServerEvent {
@@ -9,10 +10,4 @@ export enum ServerEvent {
     STOPTIMER = 'stopTimer,',
     REMOVETIMER = 'removeTimer',
     SERVEREVENT = 'serverEvent'
-}
-
-export type Timer = {
-    id: number;
-    duration: number;
-    callback: unknown;
 }

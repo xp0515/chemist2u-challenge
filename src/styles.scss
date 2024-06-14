@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+html {
+    background-color: #FFD0FB;
+}
+
+img {
+    width: 32px;
+    height: 32px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+button {
+    border: none;
+    background: none;
+    font-size: x-large;
+    height: 32px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}

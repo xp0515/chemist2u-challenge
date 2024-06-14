@@ -1,0 +1,7 @@
+<div class="container">
+    <input [value]="maskedDuration" readonly>
+    <div class="button-container">
+        <button (click)="startOrStopTimer()" [disabled]="isDisabled"><img [src]="imagePath"></button>
+        <button (click)="removeTimer()"><img src="assets/dustbin.png"></button>
+    </div>
+</div>

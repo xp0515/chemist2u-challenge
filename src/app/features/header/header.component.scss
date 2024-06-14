@@ -1,0 +1,11 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+button {
+    &:focus {
+        background-color: white;
+    }
+}
