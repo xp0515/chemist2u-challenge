@@ -35,4 +35,4 @@ jobs:
 
     - name: Deploy
       if: success()
-      run: aws s3 sync ./dist/chemist2u-challenge s3://chemist2u-client
+      run: aws s3 sync ./dist/chemist2u-challenge/browser s3://chemist2u-client
