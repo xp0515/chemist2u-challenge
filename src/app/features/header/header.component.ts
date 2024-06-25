@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, output } from "@angular/core";
 
 @Component({
     standalone: true,
@@ -9,9 +9,9 @@ import { Component, EventEmitter, Output } from "@angular/core";
 })
 
 export class HeaderComponent {
-    @Output() onAddTimer = new EventEmitter();
-    @Output() onSortAsc = new EventEmitter();
-    @Output() onSortDesc = new EventEmitter();
+    onAddTimer = output<void>();
+    onSortAsc = output<void>();
+    onSortDesc = output<void>();
 
     sortAsc = (): void => this.onSortAsc.emit();
 

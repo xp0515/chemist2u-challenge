@@ -40,6 +40,9 @@ export class TimerListComponent implements OnInit {
                 this.stopTimer(timerFormGroup as FormGroup);
             }
         });
+        this._socketService.onEvent(ServerEvent.SERVERREMOVETIMER).subscribe(({ id }) => {
+            this.timers = this.timers.filter(timer => timer.controls.id.value !== id)
+        })
     }
 
     addTimer = (): void => {
@@ -53,8 +56,7 @@ export class TimerListComponent implements OnInit {
         this._socketService.onTimerEvent(ServerEvent.ADDTIMER, { id, duration })
     }
 
-    removeTimer = (timer: FormGroup, index: number): void => {
-        this.timers.splice(index, 1)
+    removeTimer = (timer: FormGroup): void => {
         this._socketService.onTimerEvent(ServerEvent.REMOVETIMER, { duration: timer.value.duration, id: timer.value.id })
     }
 

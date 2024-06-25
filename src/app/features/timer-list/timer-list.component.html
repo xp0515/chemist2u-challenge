@@ -1,7 +1,7 @@
 <div class="container">
     <app-header (onAddTimer)="addTimer()" (onSortAsc)="sortAsc()" (onSortDesc)="sortDesc()" />
-    <div *ngFor="let timer of timers; let i=index">
+    <div *ngFor="let timer of timers">
         <app-timer [duration]="getDuration(timer)" [isRunning]="isRunning(timer)" (onStartTimer)="startTimer(timer)"
-            (onStopTimer)="stopTimer(timer)" (onRemoveTimer)="removeTimer(timer, i)" />
+            (onStopTimer)="stopTimer(timer)" (onRemoveTimer)="removeTimer(timer)" />
     </div>
 </div>

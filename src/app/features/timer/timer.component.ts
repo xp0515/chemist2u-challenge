@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from "@angular/common";
-import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
+import { Component, inject, output, input, computed } from "@angular/core";
 
 @Component({
     standalone: true,
@@ -11,28 +11,26 @@ import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
 })
 
 export class TimerComponent {
-    @Input() set duration(value: number) {
-        this.maskedDuration = this._datePipe.transform(value * 1000, 'mm:ss') ?? '00:00'
-    }
-    @Input() isRunning = false;
+    duration = input<number>(0);
+    isRunning = input<boolean>(false);
 
-    @Output() onStartTimer = new EventEmitter();
-    @Output() onStopTimer = new EventEmitter();
-    @Output() onRemoveTimer = new EventEmitter();
+    onStartTimer = output<void>();
+    onStopTimer = output<void>();
+    onRemoveTimer = output<void>();
 
-    maskedDuration = '';
+    maskedDuration = computed(() => this._datePipe.transform(this.duration() * 1000, 'mm:ss') ?? '00:00')
     isDisabled = false;
 
     private _datePipe = inject(DatePipe);
 
     get imagePath(): string {
-        return this.isRunning ? 'assets/pause.png' : 'assets/play.png';
+        return this.isRunning() ? 'assets/pause.png' : 'assets/play.png';
     }
 
     startOrStopTimer = (): void => {
         if (!this.isDisabled) {
             this.isDisabled = true;
-            this.isRunning ? this.onStopTimer.emit() : this.onStartTimer.emit();
+            this.isRunning() ? this.onStopTimer.emit() : this.onStartTimer.emit();
             setTimeout(() => {
                 this.isDisabled = false;
             }, 2000);
